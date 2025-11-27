@@ -27,7 +27,7 @@ A comprehensive Zerodha Stock Trading P&L Calculator that provides accurate prof
 #### Trading Charges
 | Charge Type | Rate | Description |
 |-------------|------|-------------|
-| **Brokerage** | ₹0 (Delivery) / ₹20 or 0.03% (Intraday) | Per executed order |
+| **Brokerage** | ₹0 (Delivery) / ₹20 per order (Intraday) | FREE for delivery, ₹40 total for intraday (buy+sell) |
 | **Exchange Transaction Charges** | NSE: 0.00297% / BSE: 0.00375% | Of turnover |
 | **Clearing Charges** | ₹0.002 per share | Capped at 0.01% of turnover |
 | **IGST** | 18% | On (brokerage + transaction charges) |
