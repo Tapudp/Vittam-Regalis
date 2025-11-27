@@ -71,19 +71,117 @@
 
         .main-content {
             padding: 30px;
-            display: grid;
-            grid-template-rows: 1fr 1fr;
-            gap: 30px;
         }
 
-        .left-section {
-            display: flex;
-            flex-direction: column;
+        .top-section {
+            margin-bottom: 30px;
         }
 
-        .right-section {
+        .add-transaction-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            position: relative;
+        }
+
+        .charges-info-btn {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            background: #387ef5;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .charges-info-btn:hover {
+            background: #2968d8;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.open {
             display: flex;
-            flex-direction: column;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            max-width: 600px;
+            max-height: 80vh;
+            width: 90%;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #387ef5 0%, #3880ff 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .modal-body {
+            padding: 20px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .charge-list-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #387ef5;
+            margin-bottom: 15px;
+        }
+
+        .charge-list-item h4 {
+            color: #387ef5;
+            margin-bottom: 5px;
+            font-size: 1em;
+        }
+
+        .charge-list-item p {
+            font-size: 0.9em;
+            margin: 0;
+            color: #495057;
         }
 
         .input-section {
@@ -95,7 +193,7 @@
 
         .input-row {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr auto;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto;
             gap: 15px;
             align-items: end;
             margin-bottom: 15px;
@@ -176,14 +274,14 @@
             background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
         }
 
-        .transactions-list-section {
+        .transactions-history-section {
             background: #f8f9fa;
             border-radius: 10px;
             padding: 25px;
-            flex: 1;
+            margin-bottom: 30px;
         }
 
-        .transactions-list-section h3 {
+        .transactions-history-section h3 {
             margin-bottom: 20px;
             color: #495057;
         }
@@ -240,11 +338,13 @@
             margin-bottom: 10px;
         }
 
-        @media (max-width: 1024px) {
-            .main-content {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .scroll-target {
+            scroll-margin-top: 20px;
         }
 
         @media (max-width: 768px) {
@@ -256,6 +356,17 @@
             .results-grid {
                 grid-template-columns: 1fr;
             }
+
+            .charges-info-btn {
+                position: static;
+                margin-top: 15px;
+                width: 100%;
+            }
+
+            .modal-content {
+                width: 95%;
+                max-height: 90vh;
+            }
         }
     </style>
 </head>
@@ -266,88 +377,55 @@
             <p>Calculate your profit/loss with all applicable charges and taxes</p>
         </div>
 
-        <div class="charges-info">
-            <h3>Current Zerodha Charges (2024)</h3>
-            <div class="charges-grid">
-                <div class="charge-item">
-                    <h4>Brokerage</h4>
-                    <p>₹0 for delivery, ₹20 or 0.03% (whichever lower) for intraday</p>
-                </div>
-                <div class="charge-item">
-                    <h4>Exchange Transaction Charges</h4>
-                    <p>NSE: 0.00297%, BSE: 0.00375% of turnover</p>
-                </div>
-                <div class="charge-item">
-                    <h4>Clearing Charges</h4>
-                    <p>₹0.002 per share (capped at 0.01% of turnover)</p>
-                </div>
-                <div class="charge-item">
-                    <h4>IGST</h4>
-                    <p>18% on (brokerage + transaction charges)</p>
-                </div>
-                <div class="charge-item">
-                    <h4>Securities Transaction Tax (STT)</h4>
-                    <p>Delivery: 0.1% on buy & sell, Intraday: 0.025% on sell</p>
-                </div>
-                <div class="charge-item">
-                    <h4>SEBI Turnover Fees</h4>
-                    <p>₹10 per crore of turnover</p>
-                </div>
-                <div class="charge-item">
-                    <h4>Stamp Duty</h4>
-                    <p>0.015% on buy side (capped at ₹1500 per trade)</p>
-                </div>
-                <div class="charge-item">
-                    <h4>STCG Tax</h4>
-                    <p>20% + 4% cess = 20.8% on profits</p>
-                </div>
-            </div>
-        </div>
-
         <div class="main-content">
-            <div class="left-section">
-                <div class="input-section">
+            <!-- Top Section: Add Transactions -->
+            <div class="top-section">
+                <div class="add-transaction-section">
                     <h3>Add Transactions</h3>
-                    <div class="transactions-container" id="transactionsContainer">
-                        <div class="input-row">
-                            <div class="input-group">
-                                <label>Number of Shares</label>
-                                <input type="number" id="shares" placeholder="e.g., 100" min="1">
-                            </div>
-                            <div class="input-group">
-                                <label>Buying Price (₹)</label>
-                                <input type="number" id="buyPrice" placeholder="e.g., 150.50" step="0.01" min="0">
-                            </div>
-                            <div class="input-group">
-                                <label>Selling Price (₹)</label>
-                                <input type="number" id="sellPrice" placeholder="e.g., 165.75" step="0.01" min="0">
-                            </div>
-                            <div class="input-group">
-                                <label>Trade Type</label>
-                                <select id="tradeType">
-                                    <option value="delivery">Delivery</option>
-                                    <option value="intraday">Intraday</option>
-                                </select>
-                            </div>
-                            <div class="input-group">
-                                <button class="btn btn-primary" onclick="addTransaction()">Add</button>
-                            </div>
+                    <button class="charges-info-btn" onclick="toggleChargesPane()">View Charges Info</button>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label>Share Name (Optional)</label>
+                            <input type="text" id="shareName" placeholder="e.g., Reliance, TCS">
+                        </div>
+                        <div class="input-group">
+                            <label>Number of Shares</label>
+                            <input type="number" id="shares" placeholder="e.g., 100" min="1" step="1" oninput="validateShares(this)">
+                        </div>
+                        <div class="input-group">
+                            <label>Buying Price (₹)</label>
+                            <input type="number" id="buyPrice" placeholder="e.g., 150.50" step="0.01" min="0.01" oninput="validatePrice(this)">
+                        </div>
+                        <div class="input-group">
+                            <label>Selling Price (₹)</label>
+                            <input type="number" id="sellPrice" placeholder="e.g., 165.75" step="0.01" min="0.01" oninput="validatePrice(this)">
+                        </div>
+                        <div class="input-group">
+                            <label>Trade Type</label>
+                            <select id="tradeType">
+                                <option value="delivery">Delivery</option>
+                                <option value="intraday">Intraday</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <button class="btn btn-primary" onclick="addTransaction()">Add</button>
                         </div>
                     </div>
-                    <button class="btn btn-primary" onclick="calculatePnL()">Calculate P&L</button>
-                </div>
-
-                <div class="transactions-list-section">
-                    <h3>Transaction History</h3>
-                    <div id="transactionsList">
-                        <p style="color: #6c757d; text-align: center; padding: 20px;">No transactions added yet. Add your first transaction above.</p>
-                    </div>
+                    <button class="btn btn-primary" onclick="calculatePnL()" style="margin-top: 20px;">Calculate P&L</button>
                 </div>
             </div>
 
-            <div class="right-section">
-                <div class="results-section" id="resultsSection" style="display: none;">
-                    <h3 id="resultsTitle">Profit & Loss Summary</h3>
+            <!-- Transaction History Section -->
+            <div class="transactions-history-section">
+                <h3>Transaction History</h3>
+                <div id="transactionsList">
+                    <p style="color: #6c757d; text-align: center; padding: 20px;">No transactions added yet. Add your first transaction above.</p>
+                </div>
+            </div>
+
+            <!-- P&L Summary Section -->
+            <div class="results-section scroll-target" id="resultsSection" style="display: none;">
+                <h3 id="resultsTitle">Profit & Loss Summary</h3>
                 <div class="results-grid">
                     <div class="result-card">
                         <h4>Total Investment</h4>
@@ -413,24 +491,140 @@
                 </div>
             </div>
         </div>
-    </div>
+
+        <!-- Charges Modal -->
+        <div class="modal-overlay" id="chargesModal" onclick="closeChargesModal(event)">
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <div class="modal-header">
+                    <h3>Current Zerodha Charges (2024)</h3>
+                    <button class="modal-close" onclick="closeChargesModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="charge-list-item">
+                        <h4>Brokerage</h4>
+                        <p>₹0 for delivery (FREE), ₹20 per order for intraday (₹40 total for buy+sell)</p>
+                    </div>
+                    <div class="charge-list-item">
+                        <h4>Exchange Transaction Charges</h4>
+                        <p>NSE: 0.00297%, BSE: 0.00375% of turnover</p>
+                    </div>
+                    <div class="charge-list-item">
+                        <h4>Clearing Charges</h4>
+                        <p>₹0.002 per share (capped at 0.01% of turnover)</p>
+                    </div>
+                    <div class="charge-list-item">
+                        <h4>IGST</h4>
+                        <p>18% on (brokerage + transaction charges)</p>
+                    </div>
+                    <div class="charge-list-item">
+                        <h4>Securities Transaction Tax (STT)</h4>
+                        <p>Delivery: 0.1% on buy & sell, Intraday: 0.025% on sell</p>
+                    </div>
+                    <div class="charge-list-item">
+                        <h4>SEBI Turnover Fees</h4>
+                        <p>₹10 per crore of turnover</p>
+                    </div>
+                    <div class="charge-list-item">
+                        <h4>Stamp Duty</h4>
+                        <p>0.015% on buy side (capped at ₹1500 per trade)</p>
+                    </div>
+                    <div class="charge-list-item">
+                        <h4>STCG Tax</h4>
+                        <p>20% + 4% cess = 20.8% on profits</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
         let transactions = [];
 
+        // Modal Functions
+        function toggleChargesPane() {
+            const modal = document.getElementById('chargesModal');
+            modal.classList.add('open');
+        }
+
+        function closeChargesModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+            const modal = document.getElementById('chargesModal');
+            modal.classList.remove('open');
+        }
+
+        // Input validation functions
+        function validateShares(input) {
+            let value = input.value;
+            
+            // Remove any decimal points and ensure it's a positive integer
+            if (value.includes('.')) {
+                value = Math.floor(parseFloat(value));
+                input.value = value > 0 ? value : '';
+            }
+            
+            // Ensure minimum value of 1
+            if (parseFloat(value) < 1) {
+                input.value = '';
+            }
+        }
+
+        function validatePrice(input) {
+            let value = parseFloat(input.value);
+            
+            // Ensure positive values only
+            if (value <= 0) {
+                input.value = '';
+                return;
+            }
+            
+            // Limit to 2 decimal places
+            if (input.value.includes('.')) {
+                const parts = input.value.split('.');
+                if (parts[1] && parts[1].length > 2) {
+                    input.value = parseFloat(input.value).toFixed(2);
+                }
+            }
+        }
+
         function addTransaction() {
-            const shares = parseFloat(document.getElementById('shares').value);
-            const buyPrice = parseFloat(document.getElementById('buyPrice').value);
-            const sellPrice = parseFloat(document.getElementById('sellPrice').value);
+            const shareName = document.getElementById('shareName').value.trim();
+            const sharesInput = document.getElementById('shares');
+            const buyPriceInput = document.getElementById('buyPrice');
+            const sellPriceInput = document.getElementById('sellPrice');
+            
+            const shares = parseInt(sharesInput.value);
+            const buyPrice = parseFloat(buyPriceInput.value);
+            const sellPrice = parseFloat(sellPriceInput.value);
             const tradeType = document.getElementById('tradeType').value;
 
-            if (!shares || !buyPrice || !sellPrice) {
-                alert('Please fill all fields');
+            // Validation with specific error messages
+            if (!shares || shares < 1) {
+                alert('Please enter a valid number of shares (must be a positive integer)');
+                sharesInput.focus();
+                return;
+            }
+
+            if (!buyPrice || buyPrice <= 0) {
+                alert('Please enter a valid buying price (must be greater than 0)');
+                buyPriceInput.focus();
+                return;
+            }
+
+            if (!sellPrice || sellPrice <= 0) {
+                alert('Please enter a valid selling price (must be greater than 0)');
+                sellPriceInput.focus();
+                return;
+            }
+
+            // Additional business logic validation
+            if (Math.floor(shares) !== shares) {
+                alert('Number of shares must be a whole number (no decimals allowed)');
+                sharesInput.focus();
                 return;
             }
 
             const transaction = {
+                shareName: shareName || null,
                 shares,
                 buyPrice,
                 sellPrice,
@@ -463,10 +657,13 @@
                 const pnl = saleValue - investment;
                 const pnlColor = pnl >= 0 ? '#28a745' : '#dc3545';
                 
+                const shareNameDisplay = t.shareName ? `<div style="font-size: 1.2em; color: #387ef5; font-weight: bold; margin-bottom: 5px;">${t.shareName}</div>` : '';
+                
                 html += `
                     <div style="background: white; margin-bottom: 15px; padding: 20px; border-radius: 8px; border: 1px solid #e9ecef; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
                             <div style="flex: 1;">
+                                ${shareNameDisplay}
                                 <div style="font-weight: bold; font-size: 1.1em; margin-bottom: 8px;">
                                     Transaction #${index + 1} - ${t.tradeType.toUpperCase()}
                                 </div>
@@ -491,6 +688,7 @@
         }
 
         function clearInputs() {
+            document.getElementById('shareName').value = '';
             document.getElementById('shares').value = '';
             document.getElementById('buyPrice').value = '';
             document.getElementById('sellPrice').value = '';
@@ -516,7 +714,9 @@
             if (tradeType === 'delivery') {
                 charges.brokerage = 0; // Free for delivery
             } else {
-                charges.brokerage = Math.min(20, turnover * 0.0003) * 2; // Buy + Sell
+                // Intraday: ₹20 per order (buy + sell) or 0.03% of turnover, whichever is lower
+                const brokeragePerOrder = Math.min(20, (buyValue + sellValue) * 0.0003);
+                charges.brokerage = brokeragePerOrder * 2; // Buy + Sell orders
             }
 
             // Exchange Transaction Charges (assuming NSE)
@@ -621,6 +821,14 @@
 
             document.getElementById('finalAmount').textContent = `₹${finalAmount.toFixed(2)}`;
             document.getElementById('resultsSection').style.display = 'block';
+            
+            // Smooth scroll to results section
+            setTimeout(() => {
+                document.getElementById('resultsSection').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }, 100);
         }
 
         // Add select styling
